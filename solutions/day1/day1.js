@@ -1,13 +1,23 @@
-function load(){
-    document.getElementById('fileInput').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (!file) {
-          return;
-        }
+async function load(){
+    document.getElementById('input-file').addEventListener('change', function() {
+        var file = this.files[0];
     
-        const reader = new FileReader();
-
-        reader.readAsText(file);
+        if (file) {
+            var reader = new FileReader();
+    
+            // Quand le fichier est chargé
+            reader.onload = function(e) {
+                // Le contenu du fichier est disponible dans e.target.result
+                console.log('Fichier chargé:', e.target.result);
+    
+                let pass=findCalibration(e.target.result)
+                let sum=findSum(pass)
+                console.log(sum)    
+            };
+    
+            // Lancer la lecture du fichier
+            reader.readAsText(file);
+        }
     });
 }
 
@@ -20,19 +30,26 @@ function isInt(value) {
   }
 
 function findCalibration(data){
+
     let tab=data.split(/\n/)
     let pass=[]
     tab.forEach(element => {
-        let i = 0;
-        while (!isInt(element[i])){
-            ++i
+        console.log(element)
+        if (element != "")
+        {
+            let i = 0;
+            while (!isInt(element[i])){
+                ++i
+            }
+            pass.push(element[i])
+
+            i = element.length-1
+            while (!isInt(element[i])){
+                i--
+            }
+
+            pass[pass.length-1]+= element[i]
         }
-        pass.push(element[i])
-        i = length(element)
-        while (!isInt(element[i])){
-            i--
-        }
-        pass[-1]+=element[i]
     });
     return pass
 }
@@ -45,7 +62,4 @@ function findSum(pass){
     return sum
 }
 
-let data=load()
-let pass=findCalibration(data)
-let sum=findSum(pass)
-console.log(sum)
+let data= await load()
