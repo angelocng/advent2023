@@ -30,7 +30,7 @@ function isInt(value) {
   }
 
 function findCalibration(data){
-    
+
     let tab=data.split(/\n/)
     let pass=[]
     tab.forEach(element => {
